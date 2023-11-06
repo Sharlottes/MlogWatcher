@@ -1,10 +1,8 @@
 package mlogjswatcher;
 
-import arc.Core;
-import arc.Events;
+import arc.*;
+import arc.util.*;
 import arc.files.Fi;
-import arc.util.Log;
-import arc.util.Nullable;
 
 import mindustry.content.Fx;
 import mindustry.game.EventType;
@@ -12,7 +10,7 @@ import mindustry.world.blocks.logic.LogicBlock;
 
 public class ProcessorUpdater {
     @Nullable
-    private static LogicBlock.LogicBuild lastTappedLogicBuild;
+    private static LogicBlock.LogicBuild lastTappedLogicBuild = null;
 
     public static void init() {
         Events.on(EventType.TapEvent.class, e -> {
@@ -22,7 +20,7 @@ public class ProcessorUpdater {
         });
     }
 
-    static void InsertLogic() {
+    public static void InsertLogic() {
         if (lastTappedLogicBuild == null) {
             Log.warn("cannot find any selected logic block!");
             return;

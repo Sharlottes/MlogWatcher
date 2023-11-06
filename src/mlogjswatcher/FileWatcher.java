@@ -7,7 +7,7 @@ import arc.util.Nullable;
 import java.io.IOException;
 import java.nio.file.*;
 
-public class FileWatcher                                {
+public class FileWatcher {
     @Nullable
     private static Thread fileWatcherThread;
     public static void startWatcherThread() {

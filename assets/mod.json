@@ -1,0 +1,13 @@
+{
+  "name": "mlogjswatcher",
+  "displayName": "MLogJsWatcher",
+  "author": "Sharlottes",
+  "description": "the mlogjs watcher mod",
+  "subtitle": "for mlogjs",
+  "version": "0.1v",
+  "main": "mlogjswatcher.MlogJsWatcher",
+  "minGameVersion": "146",
+  "dependencies": [],
+  "hidden": true,
+  "java": true
+}

@@ -3,8 +3,10 @@ package mlogjswatcher;
 import arc.*;
 import arc.util.*;
 import arc.files.Fi;
+import arc.graphics.g2d.*;
 
 import mindustry.content.Fx;
+import mindustry.graphics.Pal;
 import mindustry.game.EventType;
 import mindustry.world.blocks.logic.LogicBlock;
 
@@ -16,7 +18,18 @@ public class ProcessorUpdater {
         Events.on(EventType.TapEvent.class, e -> {
             if (e.tile.build instanceof LogicBlock.LogicBuild logicBuild) {
                 lastTappedLogicBuild = logicBuild;
+            } else {
+                lastTappedLogicBuild = null;
             }
+        });
+
+        Events.run(EventType.Trigger.draw, () -> {
+            if(lastTappedLogicBuild == null) return;
+            Draw.reset();
+            Lines.stroke(1f);
+            Draw.color(Pal.accent);
+            Lines.poly(lastTappedLogicBuild.x, lastTappedLogicBuild.y, 4, 8f);
+            Draw.reset();
         });
     }
 

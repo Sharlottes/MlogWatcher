@@ -36,5 +36,5 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v2.2.1
         with:
-          name: mlogjswatcher built by action
+          name: MlogWatcher built by action
           path: build/libs/[!raw-]*.jar

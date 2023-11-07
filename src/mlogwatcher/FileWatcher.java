@@ -1,4 +1,4 @@
-package mlogjswatcher;
+package mlogwatcher;
 
 import arc.Core;
 import arc.util.Log;
@@ -11,7 +11,7 @@ public class FileWatcher {
     @Nullable
     private static Thread fileWatcherThread;
     public static void startWatcherThread() {
-        fileWatcherThread = new FileWatcherThread();
+        fileWatcherThread = new FileWatcherThread(Core.settings.getString("mlogwatcher-mlog-path"));
         fileWatcherThread.start();
     }
 
@@ -21,19 +21,20 @@ public class FileWatcher {
 }
 
 class FileWatcherThread extends Thread {
-    public FileWatcherThread() {
+    private final String targetFilePath;
+
+    public FileWatcherThread(String targetFilePath) {
         super();
-        setPriority(MIN_PRIORITY);
         setDaemon(true);
+        setPriority(MIN_PRIORITY);
+        this.targetFilePath = targetFilePath;
     }
 
     @Override
     public void run() {
         super.run();
-        String mlogjsPath = Core.settings.getString("mlogjswatcher-mlogjs-path");
-
         try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-            FileSystems.getDefault().getPath(mlogjsPath).getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+            FileSystems.getDefault().getPath(targetFilePath).getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
             while (true) {
                 final WatchKey watchKey = watchService.take();
                 for (WatchEvent<?> event : watchKey.pollEvents()) {
@@ -48,9 +49,9 @@ class FileWatcherThread extends Thread {
         } catch (IOException e)  {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            Log.warn("mlogjs target file has been changed");
+            Log.warn("mlog watcher's target file has been changed");
         } catch (Exception e) {
-            Log.warn("mlogjs file watcher restarted");
+            Log.warn("mlog watcher's file watcher restarted");
             FileWatcher.startWatcherThread();
         }
     }

@@ -1,4 +1,4 @@
-package mlogjswatcher;
+package mlogwatcher;
 
 import arc.*;
 import arc.util.*;
@@ -39,8 +39,8 @@ public class ProcessorUpdater {
             return;
         }
 
-        String mlogjsPath = Core.settings.getString("mlogjswatcher-mlogjs-path");
-        String asmCode = Fi.get(mlogjsPath).readString().replace("\r\n", "\n");
+        String mlogPath = Core.settings.getString("mlogwatcher-mlog-path");
+        String asmCode = Fi.get(mlogPath).readString().replace("\r\n", "\n");
         lastTappedLogicBuild.configure(LogicBlock.compress(asmCode, lastTappedLogicBuild.relativeConnections()));
         Fx.spawn.at(lastTappedLogicBuild.x, lastTappedLogicBuild.y);
     }

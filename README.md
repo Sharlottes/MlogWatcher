@@ -1,6 +1,6 @@
 # MlogWatcher 
 
-the Mindustry mod for Logic JavaScript Compiler watch mode.
+The Mindustry Mod for developing Mindustry Logic.
 
 ## Principle
 This mod watches for changes to a specific `.mlog` file (the custom file extension which contains mlog).   

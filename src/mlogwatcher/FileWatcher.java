@@ -1,6 +1,7 @@
 package mlogwatcher;
 
 import arc.Core;
+import arc.func.Cons;
 import arc.util.Log;
 import arc.util.Nullable;
 
@@ -11,7 +12,7 @@ public class FileWatcher {
     @Nullable
     private static Thread fileWatcherThread;
     public static void startWatcherThread() {
-        fileWatcherThread = new FileWatcherThread(Core.settings.getString("mlogwatcher-mlog-path"));
+        fileWatcherThread = new FileWatcherThread(Core.settings.getString(Constants.Settings.mlogPath));
         fileWatcherThread.start();
     }
 

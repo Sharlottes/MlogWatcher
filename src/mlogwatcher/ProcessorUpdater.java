@@ -39,7 +39,7 @@ public class ProcessorUpdater {
             return;
         }
 
-        String mlogPath = Core.settings.getString("mlogwatcher-mlog-path");
+        String mlogPath = Core.settings.getString(Constants.Settings.mlogPath);
         String asmCode = Fi.get(mlogPath).readString().replace("\r\n", "\n");
         lastTappedLogicBuild.configure(LogicBlock.compress(asmCode, lastTappedLogicBuild.relativeConnections()));
         Fx.spawn.at(lastTappedLogicBuild.x, lastTappedLogicBuild.y);

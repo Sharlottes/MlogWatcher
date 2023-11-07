@@ -33,8 +33,9 @@ class FileWatcherThread extends Thread {
     @Override
     public void run() {
         super.run();
+        Path targetFilePath = FileSystems.getDefault().getPath(this.targetFilePath).getParent();
         try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-            FileSystems.getDefault().getPath(targetFilePath).getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+            targetFilePath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
             while (true) {
                 final WatchKey watchKey = watchService.take();
                 for (WatchEvent<?> event : watchKey.pollEvents()) {

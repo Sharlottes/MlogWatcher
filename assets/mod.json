@@ -4,7 +4,7 @@
   "author": "Sharlottes",
   "description": "the mlog watcher mod",
   "subtitle": "for mlog",
-  "version": "0.1.1v",
+  "version": "0.2v",
   "main": "mlogwatcher.MlogWatcher",
   "minGameVersion": "146",
   "dependencies": [],

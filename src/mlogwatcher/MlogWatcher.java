@@ -10,6 +10,16 @@ public class MlogWatcher extends Mod {
             Setting.init();
             ProcessorUpdater.init();
             FileWatcher.startWatcherThread();
+            MlogServer.startServer();
+
+            Thread shutdownThread = new Thread(() -> {
+               FileWatcher.stopWatcherThread();
+
+               // needs to be called before closing
+                // or else the jvm will keep running
+               MlogServer.stopServer();
+            });
+            Runtime.getRuntime().addShutdownHook(shutdownThread);
         });
     }
 }

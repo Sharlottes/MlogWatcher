@@ -33,14 +33,18 @@ public class ProcessorUpdater {
         });
     }
 
-    public static void InsertLogic() {
+    public static void InsertLogic(){
+        String mlogPath = Core.settings.getString(Constants.Settings.mlogPath);
+        String asmCode = Fi.get(mlogPath).readString().replace("\r\n", "\n");
+        InsertLogic(asmCode);
+    }
+
+    public static void InsertLogic(String asmCode) {
         if (lastTappedLogicBuild == null) {
             Log.warn("cannot find any selected logic block!");
             return;
         }
 
-        String mlogPath = Core.settings.getString(Constants.Settings.mlogPath);
-        String asmCode = Fi.get(mlogPath).readString().replace("\r\n", "\n");
         lastTappedLogicBuild.configure(LogicBlock.compress(asmCode, lastTappedLogicBuild.relativeConnections()));
         Fx.spawn.at(lastTappedLogicBuild.x, lastTappedLogicBuild.y);
     }

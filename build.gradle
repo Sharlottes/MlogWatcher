@@ -31,6 +31,7 @@ dependencies {
 }
 
 jar {
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
     archiveFileName = "${artifactFilename}Desktop.jar"
 
     from{

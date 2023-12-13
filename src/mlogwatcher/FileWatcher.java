@@ -12,11 +12,13 @@ public class FileWatcher {
     @Nullable
     private static Thread fileWatcherThread;
     public static void startWatcherThread() {
+        if(fileWatcherThread != null) return;
         fileWatcherThread = new FileWatcherThread(Core.settings.getString(Constants.Settings.mlogPath));
         fileWatcherThread.start();
     }
 
     public static void stopWatcherThread() {
+        if(fileWatcherThread == null) return;
         fileWatcherThread.interrupt();
     }
 }
@@ -58,3 +60,4 @@ class FileWatcherThread extends Thread {
         }
     }
 }
+

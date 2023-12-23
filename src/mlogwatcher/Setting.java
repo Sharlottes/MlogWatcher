@@ -21,28 +21,21 @@ public class Setting {
         field.setFilter((f, c) -> c != ' ' && c != '.');
         field.setMessageText("no ext");
 
-        Dialog dialog = new BaseDialog(Constants.Bundles.settingTitle);
-        dialog.addCloseButton();
-        dialog.cont.center();
-        dialog.cont.add(Constants.Bundles.settingMlogPathLabel).row();
-        dialog.cont.add(label).row();
-        dialog.cont.button(Constants.Bundles.settingMlogSelectButton, () -> {
-            Vars.platform.showFileChooser(true, Constants.Bundles.settingFileChooserTitle, field.getText(), fi -> {
-                label.setText(fi.absolutePath());
-                Core.settings.put(Constants.Settings.mlogPath, fi.absolutePath());
-                FileWatcher.stopWatcherThread();
-                FileWatcher.startWatcherThread();
+        Vars.ui.settings.addCategory("Mlog Watcher", t -> {
+            t.add(Constants.Bundles.settingMlogPathLabel).row();
+            t.add(label).row();
+            t.button(Constants.Bundles.settingMlogSelectButton, () -> {
+                Vars.platform.showFileChooser(true, Constants.Bundles.settingFileChooserTitle, field.getText(), fi -> {
+                    label.setText(fi.absolutePath());
+                    Core.settings.put(Constants.Settings.mlogPath, fi.absolutePath());
+                    FileWatcher.stopWatcherThread();
+                    FileWatcher.startWatcherThread();
+                });
+            }).width(280f).height(60f).pad(16f).row();
+            t.table(fieldTable -> {
+                fieldTable.add(Constants.Bundles.settingExtensionInputLabel);
+                fieldTable.add(field);
             });
-        }).width(280f).height(60f).pad(16f).row();
-        dialog.cont.table(fieldTable -> {
-            fieldTable.add(Constants.Bundles.settingExtensionInputLabel);
-            fieldTable.add(field);
-        });
-
-        Vars.ui.settings.shown(() -> {
-            Table settingUi = (Table)((Group)((Group)(Vars.ui.settings.getChildren().get(1))).getChildren().get(0)).getChildren().get(0); //This looks so stupid lol
-            settingUi.row();
-            settingUi.button("Mlog Watcher", Styles.cleart, dialog::show);
         });
     }
 }

@@ -10,6 +10,7 @@ public class MlogWatcher extends Mod {
             Setting.init();
             ProcessorUpdater.init();
             FileWatcher.startWatcherThread();
+            MlogServer.startServer();
 
             Thread shutdownThread = new Thread(() -> {
                FileWatcher.stopWatcherThread();
@@ -19,13 +20,6 @@ public class MlogWatcher extends Mod {
                MlogServer.stopServer();
             });
             Runtime.getRuntime().addShutdownHook(shutdownThread);
-        });
-
-        Events.on(EventType.StateChangeEvent.class, e -> {
-            switch(e.to) {
-                case menu -> MlogServer.stopServer();
-                case playing -> MlogServer.startServer();
-            }
         });
     }
 }

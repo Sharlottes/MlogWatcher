@@ -1,5 +1,7 @@
 package mlogwatcher;
 
+import arc.Core;
+import arc.util.Log;
 import arc.util.Nullable;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -16,7 +18,7 @@ public class MlogServer extends WebSocketServer {
 
     public static void startServer() {
         if(server != null) return;
-        server = new MlogServer(9992);
+        server = new MlogServer(Core.settings.getInt(Constants.Settings.websocketPort));
         server.start();
     }
 

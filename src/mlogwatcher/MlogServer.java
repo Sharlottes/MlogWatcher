@@ -50,11 +50,11 @@ public class MlogServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-
+        Log.err("[MlogWatcher] socket error", ex);
     }
 
     @Override
     public void onStart() {
-
+        Log.info("[MlogWatcher] server running on port @", getPort());
     }
 }

@@ -1,18 +1,9 @@
 package mlogwatcher;
 
 import arc.Core;
-import arc.func.Cons;
-import arc.graphics.Color;
-import arc.scene.Group;
-import arc.scene.ui.Dialog;
 import arc.scene.ui.Label;
 import arc.scene.ui.TextField;
-import arc.scene.ui.layout.*;
-
 import mindustry.Vars;
-import mindustry.ui.Styles;
-import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.SettingsMenuDialog;
 
 public class Setting {
     public static void init() {
@@ -49,7 +40,7 @@ public class Setting {
                 try {
                     int port = Integer.parseInt(portTextField.getText());
                     Core.settings.put(Constants.Settings.websocketPort, port);
-                } catch(NumberFormatException ignored) {
+                } catch (NumberFormatException ignored) {
 
                 }
             });

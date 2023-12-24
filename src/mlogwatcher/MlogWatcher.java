@@ -1,11 +1,11 @@
 package mlogwatcher;
 
 import arc.Events;
-import mindustry.mod.Mod;
 import mindustry.game.EventType;
+import mindustry.mod.Mod;
 
 public class MlogWatcher extends Mod {
-    public MlogWatcher(){
+    public MlogWatcher() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Setting.init();
             ProcessorUpdater.init();

@@ -1,13 +1,15 @@
 package mlogwatcher;
 
-import arc.*;
-import arc.util.*;
+import arc.Core;
+import arc.Events;
 import arc.files.Fi;
-import arc.graphics.g2d.*;
-
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.util.Log;
+import arc.util.Nullable;
 import mindustry.content.Fx;
-import mindustry.graphics.Pal;
 import mindustry.game.EventType;
+import mindustry.graphics.Pal;
 import mindustry.world.blocks.logic.LogicBlock;
 
 public class ProcessorUpdater {
@@ -24,7 +26,7 @@ public class ProcessorUpdater {
         });
 
         Events.run(EventType.Trigger.draw, () -> {
-            if(lastTappedLogicBuild == null) return;
+            if (lastTappedLogicBuild == null) return;
             Draw.reset();
             Lines.stroke(1f);
             Draw.color(Pal.accent);
@@ -33,7 +35,7 @@ public class ProcessorUpdater {
         });
     }
 
-    public static void InsertLogic(){
+    public static void InsertLogic() {
         String mlogPath = Core.settings.getString(Constants.Settings.mlogPath);
         String asmCode = Fi.get(mlogPath).readString().replace("\r\n", "\n");
         InsertLogic(asmCode);

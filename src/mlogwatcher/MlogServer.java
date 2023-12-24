@@ -12,20 +12,21 @@ import java.net.BindException;
 import java.net.InetSocketAddress;
 
 public class MlogServer extends WebSocketServer {
-    @Nullable private static MlogServer server;
+    @Nullable
+    private static MlogServer server;
 
     MlogServer(int port) {
         super(new InetSocketAddress(port));
     }
 
     public static void startServer() {
-        if(server != null) return;
+        if (server != null) return;
         server = new MlogServer(Core.settings.getInt(Constants.Settings.websocketPort));
         server.start();
     }
 
     public static void stopServer() {
-        if(server == null) return;
+        if (server == null) return;
 
         try {
             server.stop();
@@ -54,7 +55,7 @@ public class MlogServer extends WebSocketServer {
     public void onError(WebSocket conn, Exception ex) {
         Log.err("[MlogWatcher] socket error", ex);
 
-        if(ex instanceof BindException) {
+        if (ex instanceof BindException) {
             Vars.ui.showInfo(Constants.Bundles.infoServerBindError);
         }
     }

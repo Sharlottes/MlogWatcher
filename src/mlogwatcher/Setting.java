@@ -58,7 +58,7 @@ public class Setting {
             t.add(portTextField);
             t.row();
 
-            t.button("Restart websocket server", () -> {
+            t.button(Constants.Bundles.settingRestartServerButton, () -> {
                 MlogServer.stopServer();
                 MlogServer.startServer();
             }).height(60f).pad(16f).colspan(2).fill().row();

@@ -8,6 +8,7 @@ public class Constants {
         public static final String settingFileChooserTitle = "@mlogwatcher.setting.fileChooserTitle";
         public static final String settingExtensionInputLabel = "@mlogwatcher.setting.extensionInputLabel";
         public static final String settingWebsocketPortLabel ="@mlogwatcher.setting.websocketPortLabel";
+        public static final String settingRestartServerButton ="@mlogwatcher.setting.restartServerButton";
     }
 
     static class Settings {

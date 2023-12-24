@@ -3,10 +3,12 @@ package mlogwatcher;
 import arc.Core;
 import arc.util.Log;
 import arc.util.Nullable;
+import mindustry.Vars;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import java.net.BindException;
 import java.net.InetSocketAddress;
 
 public class MlogServer extends WebSocketServer {
@@ -51,6 +53,10 @@ public class MlogServer extends WebSocketServer {
     @Override
     public void onError(WebSocket conn, Exception ex) {
         Log.err("[MlogWatcher] socket error", ex);
+
+        if(ex instanceof BindException) {
+            Vars.ui.showInfo(Constants.Bundles.infoServerBindError);
+        }
     }
 
     @Override

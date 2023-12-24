@@ -9,6 +9,8 @@ public class Constants {
         public static final String settingExtensionInputLabel = "@mlogwatcher.setting.extensionInputLabel";
         public static final String settingWebsocketPortLabel ="@mlogwatcher.setting.websocketPortLabel";
         public static final String settingRestartServerButton ="@mlogwatcher.setting.restartServerButton";
+
+        public static final String infoServerBindError = "@mlogwatcher.info.serverBindError";
     }
 
     static class Settings {

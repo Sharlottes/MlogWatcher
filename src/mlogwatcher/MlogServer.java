@@ -35,7 +35,7 @@ public class MlogServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        conn.send("Welcome!");
+
     }
 
     @Override
@@ -46,7 +46,6 @@ public class MlogServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         ProcessorUpdater.InsertLogic(message);
-        conn.send(message);
     }
 
     @Override

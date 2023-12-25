@@ -1,48 +1,63 @@
 package mlogwatcher;
 
 import arc.Core;
-import arc.scene.Group;
-import arc.scene.ui.Dialog;
 import arc.scene.ui.Label;
 import arc.scene.ui.TextField;
-import arc.scene.ui.layout.*;
-
 import mindustry.Vars;
-import mindustry.ui.Styles;
-import mindustry.ui.dialogs.BaseDialog;
 
 public class Setting {
-    public static void init(){
-        Label label = new Label(Core.settings.getString(Constants.Settings.mlogPath, "[lightgray]@none[]"));
-        label.setFontScale(0.75f);
+    public static void init() {
+        Core.settings.defaults(
+                Constants.Settings.mlogPath, "[lightgray]@none[]",
+                Constants.Settings.websocketPort, 9992
+        );
 
-        TextField field = new TextField();
-        field.setText("mlog");
-        field.setFilter((f, c) -> c != ' ' && c != '.');
-        field.setMessageText("no ext");
+        Vars.ui.settings.addCategory("Mlog Watcher", t -> {
+            Label label = new Label(() -> Core.settings.getString(Constants.Settings.mlogPath));
+            label.setFontScale(0.75f);
 
-        Dialog dialog = new BaseDialog(Constants.Bundles.settingTitle);
-        dialog.addCloseButton();
-        dialog.cont.center();
-        dialog.cont.add(Constants.Bundles.settingMlogPathLabel).row();
-        dialog.cont.add(label).row();
-        dialog.cont.button(Constants.Bundles.settingMlogSelectButton, () -> {
-            Vars.platform.showFileChooser(true, Constants.Bundles.settingFileChooserTitle, field.getText(), fi -> {
-                label.setText(fi.absolutePath());
-                Core.settings.put(Constants.Settings.mlogPath, fi.absolutePath());
-                FileWatcher.stopWatcherThread();
-                FileWatcher.startWatcherThread();
+            TextField extensionTextField = new TextField();
+            extensionTextField.setText("mlog");
+            extensionTextField.setFilter((f, c) -> c != ' ' && c != '.');
+            extensionTextField.setMessageText("no ext");
+
+            t.add(Constants.Bundles.settingMlogPathLabel).left().colspan(2).row();
+            t.add(label).left().colspan(2).row();
+            t.button(Constants.Bundles.settingMlogSelectButton, () -> {
+                Vars.platform.showFileChooser(true, Constants.Bundles.settingFileChooserTitle, extensionTextField.getText(), fi -> {
+                    Core.settings.put(Constants.Settings.mlogPath, fi.absolutePath());
+                    FileWatcher.stopWatcherThread();
+                    FileWatcher.startWatcherThread();
+                });
+            }).height(60f).pad(16f).colspan(2).fill().row();
+            t.add(Constants.Bundles.settingExtensionInputLabel).left();
+            t.add(extensionTextField);
+            t.row();
+
+            TextField portTextField = new TextField();
+            portTextField.update(() -> portTextField.setText(String.valueOf(Core.settings.getInt(Constants.Settings.websocketPort))));
+            portTextField.changed(() -> {
+                try {
+                    int port = Integer.parseInt(portTextField.getText());
+                    Core.settings.put(Constants.Settings.websocketPort, port);
+                } catch (NumberFormatException ignored) {
+
+                }
             });
-        }).width(280f).height(60f).pad(16f).row();
-        dialog.cont.table(fieldTable -> {
-            fieldTable.add(Constants.Bundles.settingExtensionInputLabel);
-            fieldTable.add(field);
-        });
 
-        Vars.ui.settings.shown(() -> {
-            Table settingUi = (Table)((Group)((Group)(Vars.ui.settings.getChildren().get(1))).getChildren().get(0)).getChildren().get(0); //This looks so stupid lol
-            settingUi.row();
-            settingUi.button("Mlog Watcher", Styles.cleart, dialog::show);
+            t.add(Constants.Bundles.settingWebsocketPortLabel).left();
+            t.add(portTextField);
+            t.row();
+
+            t.button(Constants.Bundles.settingRestartServerButton, () -> {
+                MlogServer.stopServer();
+                MlogServer.startServer();
+            }).height(60f).pad(16f).colspan(2).fill().row();
+
+            t.button("@settings.reset", () -> {
+                Core.settings.remove(Constants.Settings.mlogPath);
+                Core.settings.remove(Constants.Settings.websocketPort);
+            }).margin(14).width(240f).pad(6).colspan(2).row();
         });
     }
 }

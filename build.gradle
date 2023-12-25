@@ -25,11 +25,13 @@ repositories {
 dependencies {
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    implementation 'org.java-websocket:Java-WebSocket:1.5.4'
 
     annotationProcessor 'com.github.Anuken:jabel:0.8.0'
 }
 
 jar {
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
     archiveFileName = "${artifactFilename}Desktop.jar"
 
     from{

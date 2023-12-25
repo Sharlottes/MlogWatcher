@@ -1,7 +1,6 @@
 package mlogwatcher;
 
 import arc.Core;
-import arc.func.Cons;
 import arc.util.Log;
 import arc.util.Nullable;
 
@@ -11,12 +10,15 @@ import java.nio.file.*;
 public class FileWatcher {
     @Nullable
     private static Thread fileWatcherThread;
+
     public static void startWatcherThread() {
+        if (fileWatcherThread != null) return;
         fileWatcherThread = new FileWatcherThread(Core.settings.getString(Constants.Settings.mlogPath));
         fileWatcherThread.start();
     }
 
     public static void stopWatcherThread() {
+        if (fileWatcherThread == null) return;
         fileWatcherThread.interrupt();
     }
 }
@@ -46,9 +48,9 @@ class FileWatcherThread extends Thread {
                 }
 
                 boolean valid = watchKey.reset();
-                if(!valid) throw new Exception("watch mode no longer valid!");
+                if (!valid) throw new Exception("watch mode no longer valid!");
             }
-        } catch (IOException e)  {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             Log.warn("mlog watcher's target file has been changed");
@@ -58,3 +60,4 @@ class FileWatcherThread extends Thread {
         }
     }
 }
+

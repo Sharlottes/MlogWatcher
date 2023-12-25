@@ -54,9 +54,14 @@ public class Setting {
                 MlogServer.startServer();
             }).height(60f).pad(16f).colspan(2).fill().row();
 
+            t.check(Constants.Bundles.settingIgnoreServerBindError, (checked) -> {
+                Core.settings.put(Constants.Settings.ignoreServerBindError, checked);
+            }).colspan(2).fill().checked((x) -> Core.settings.getBool(Constants.Settings.ignoreServerBindError)).row();
+
             t.button("@settings.reset", () -> {
                 Core.settings.remove(Constants.Settings.mlogPath);
                 Core.settings.remove(Constants.Settings.websocketPort);
+                Core.settings.remove(Constants.Settings.ignoreServerBindError);
             }).margin(14).width(240f).pad(6).colspan(2).row();
         });
     }

@@ -1,6 +1,9 @@
 package mlogwatcher;
 
 import arc.Core;
+import arc.input.KeyCode;
+import arc.scene.ui.Dialog;
+import arc.scene.ui.Label;
 import arc.util.Log;
 import arc.util.Nullable;
 import mindustry.Vars;
@@ -56,7 +59,22 @@ public class MlogServer extends WebSocketServer {
         Log.err("[MlogWatcher] socket error", ex);
 
         if (ex instanceof BindException) {
-            Vars.ui.showInfo(Constants.Bundles.infoServerBindError);
+            boolean ignore = Core.settings.getBool(Constants.Settings.ignoreServerBindError);
+            if(ignore) return;
+
+            (new Dialog(Constants.Bundles.infoServerBindErrorTitle) {
+                {
+                    this.getCell(this.cont).growX();
+                    this.cont.margin(15.0F).add(Constants.Bundles.infoServerBindError).width(400.0F).wrap().get().setAlignment(1, 1);
+                    this.buttons.button("@ok", this::hide).size(110.0F, 50.0F).pad(4.0F);
+                    this.keyDown(KeyCode.enter, this::hide);
+                    this.closeOnBack();
+                    this.row();
+                    this.check(Constants.Bundles.settingIgnoreServerBindError, (checked) -> {
+                        Core.settings.put(Constants.Settings.ignoreServerBindError, checked);
+                    }).checked(Core.settings.getBool(Constants.Settings.ignoreServerBindError));
+                }
+            }).show();
         }
     }
 

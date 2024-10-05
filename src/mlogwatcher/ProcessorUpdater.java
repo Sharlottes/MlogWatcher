@@ -41,13 +41,14 @@ public class ProcessorUpdater {
         InsertLogic(asmCode);
     }
 
-    public static void InsertLogic(String asmCode) {
+    public static boolean InsertLogic(String asmCode) {
         if (lastTappedLogicBuild == null) {
             Log.warn("cannot find any selected logic block!");
-            return;
+            return false;
         }
 
         lastTappedLogicBuild.configure(LogicBlock.compress(asmCode, lastTappedLogicBuild.relativeConnections()));
         Fx.spawn.at(lastTappedLogicBuild.x, lastTappedLogicBuild.y);
+        return true;
     }
 }

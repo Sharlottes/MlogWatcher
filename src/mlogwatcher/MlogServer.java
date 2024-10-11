@@ -3,10 +3,8 @@ package mlogwatcher;
 import arc.Core;
 import arc.input.KeyCode;
 import arc.scene.ui.Dialog;
-import arc.scene.ui.Label;
 import arc.util.Log;
 import arc.util.Nullable;
-import mindustry.Vars;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -17,6 +15,9 @@ import java.net.InetSocketAddress;
 public class MlogServer extends WebSocketServer {
     @Nullable
     private static MlogServer server;
+
+    public static final String STATUS_OK = "ok";
+    public static final String STATUS_NO_PROCESSOR = "no_processor";
 
     MlogServer(int port) {
         super(new InetSocketAddress(port));
@@ -51,7 +52,8 @@ public class MlogServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        ProcessorUpdater.InsertLogic(message);
+        boolean processorAttached = ProcessorUpdater.InsertLogic(message);
+        conn.send(processorAttached ? STATUS_OK : STATUS_NO_PROCESSOR);
     }
 
     @Override

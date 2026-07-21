@@ -218,16 +218,16 @@ public class FileWatcher {
                     Path watchedPath = (Path) watchKey.watchable();
 
                     for (WatchEvent<?> event : watchKey.pollEvents()) {
+                        Path absolutePath = watchedPath.resolve((Path) event.context());
+
+                        handleFile(absolutePath, targetFilePath);
+
                         if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                             Log.warn("[MlogWatcher] new file detected, restarting watcher thread");
                             FileWatcher.restartWatcherThread();
 
                             return;
                         }
-
-                        Path absolutePath = watchedPath.resolve((Path) event.context());
-
-                        handleFile(absolutePath, targetFilePath);
                     }
 
                     boolean valid = watchKey.reset();

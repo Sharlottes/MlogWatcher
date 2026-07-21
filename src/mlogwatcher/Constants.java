@@ -23,6 +23,7 @@ public class Constants {
         public static final String settingMlogRootDirectoryInputLabel = "@mlogwatcher.setting.mlogRootDirectoryInputLabel";
         public static final String settingMlogExtensionInputLabel = "@mlogwatcher.setting.mlogExtensionInputLabel";
         public static final String settingMschExtensionInputLabel = "@mlogwatcher.setting.mschExtensionInputLabel";
+        public static final String settingAssetRootDirectoryInputLabel = "@mlogwatcher.setting.assetRootDirectoryInputLabel";
         public static final String settingPatchFilePatternInputLabel = "@mlogwatcher.setting.patchFilePatternInputLabel";
         public static final String settingContentFilePatternInputLabel = "@mlogwatcher.setting.contentFilePatternInputLabel";
         public static final String settingTranslationFilePatternInputLabel = "@mlogwatcher.setting.translationFilePatternInputLabel";
@@ -60,6 +61,7 @@ public class Constants {
         public static final String mlogRootDirectory = "mlogwatcher-mlog-root-directory";
         public static final String mlogExtension = "mlogwatcher-mlog-extension";
         public static final String mschExtension = "mlogwatcher-msch-extension";
+        public static final String assetRootDirectory = "mlogwatcher-asset-root-directory";
         public static final String patchFilePattern = "mlogwatcher-patch-file-pattern";
         public static final String contentFilePattern = "mlogwatcher-content-file-pattern";
         public static final String translationFilePattern = "mlogwatcher-translation-file-pattern";

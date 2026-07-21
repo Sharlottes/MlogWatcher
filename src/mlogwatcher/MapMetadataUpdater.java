@@ -88,13 +88,16 @@ public class MapMetadataUpdater {
      * @see mindustry.editor.data.MapContentView#addContent(MapAssetsDialog, ContentType, String, String)@MapContentView#addContent
      */
     public static void updateContent(Path path, String text) {
-        String typeDirectory = path.subpath(0, 1).toString();
-        ContentType contentType = Structs.find(ContentType.all, type -> type.folderName.equalsIgnoreCase(typeDirectory));
+        String typeDirectory = path.subpath(1, 2).toString();
+        @Nullable ContentType contentType = Structs.find(ContentType.all, type -> type.folderName.equalsIgnoreCase(typeDirectory));
         Seq<ContentAsset> contents = state.data.getContent();
-        ContentAsset asset = new ContentAsset(path.toString(), contentType, text);
+        ContentAsset asset = new ContentAsset(path.getFileName().toString(), contentType, text);
         int replaceIndex = contents.indexOf(p ->  p.path.equalsIgnoreCase(asset.path) || p.name.equalsIgnoreCase(asset.name));
 
-        if(replaceIndex == -1) {
+        if(contentType == null) {
+            Log.warn("[MlogWatcher] unknown content type: " + typeDirectory);
+            return;
+        } else if(replaceIndex == -1) {
             contents.add(asset);
         } else {
             contents.set(replaceIndex, asset);

@@ -112,6 +112,7 @@ public class Settings {
                 numberOfSchematicsLabel.update(l -> l.setText(numberOfSchematicsText()));
             });
 
+            extension(t, Constants.Settings.assetRootDirectory, Constants.Bundles.settingAssetRootDirectoryInputLabel);
             pattern(t, Constants.Settings.patchFilePattern, Constants.Bundles.settingPatchFilePatternInputLabel);
             pattern(t, Constants.Settings.contentFilePattern, Constants.Bundles.settingContentFilePatternInputLabel);
             pattern(t, Constants.Settings.translationFilePattern, Constants.Bundles.settingTranslationFilePatternInputLabel);
@@ -133,6 +134,7 @@ public class Settings {
                 Core.settings.remove(Constants.Settings.legacyApiOff);
                 Core.settings.remove(Constants.Settings.processorTagVariables);
 
+                Core.settings.remove(Constants.Settings.assetRootDirectory);
                 Core.settings.remove(Constants.Settings.patchFilePattern);
                 Core.settings.remove(Constants.Settings.contentFilePattern);
                 Core.settings.remove(Constants.Settings.translationFilePattern);

@@ -79,6 +79,7 @@ public class FileWatcher {
 
         try {
             Log.info("[MlogWatcher] updating all files");
+            state.data.unload();
             forceUpdateRecursive(path, path);
             Log.info("[MlogWatcher] all files updated");
             ui.showInfoFade(Constants.Bundles.forceUpdateAllDone);
@@ -145,6 +146,9 @@ public class FileWatcher {
         Path mlogRelativePath = FileSystems.getDefault()
                 .getPath(Core.settings.getString(Constants.Settings.mlogRootDirectory))
                 .relativize(relativePath);
+        Path assetRelativePath = FileSystems.getDefault()
+                .getPath(Core.settings.getString(Constants.Settings.assetRootDirectory))
+                .relativize(relativePath);
 
         if (matchesExtension(pathString, Constants.Settings.mlogExtension)) {
             Log.info("[MlogWatcher] updating logic");
@@ -152,22 +156,22 @@ public class FileWatcher {
         } else if (matchesExtension(pathString, Constants.Settings.mschExtension)) {
             Log.info("[MlogWatcher] updating schematics");
             Core.app.post(() -> SchematicsUpdater.importSchematicsFromFile(pathString));
-        } else if (matchesPattern(relativePath, Constants.Settings.patchFilePattern)) {
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.patchFilePattern)) {
             Log.info("[MlogWatcher] updating patch files");
-            Core.app.post(() -> MapMetadataUpdater.updatePatch(relativePath, text));
-        } else if (matchesPattern(relativePath, Constants.Settings.contentFilePattern)) {
+            Core.app.post(() -> MapMetadataUpdater.updatePatch(assetRelativePath, text));
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.contentFilePattern)) {
             Log.info("[MlogWatcher] updating content files");
-            Core.app.post(() -> MapMetadataUpdater.updateContent(relativePath, text));
-        } else if (matchesPattern(relativePath, Constants.Settings.translationFilePattern)) {
+            Core.app.post(() -> MapMetadataUpdater.updateContent(assetRelativePath, text));
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.translationFilePattern)) {
             Log.info("[MlogWatcher] updating translation files");
-            Core.app.post(() -> MapMetadataUpdater.updateTranslation(relativePath, text));
-        } else if (matchesPattern(relativePath, Constants.Settings.imageFilePattern)) {
+            Core.app.post(() -> MapMetadataUpdater.updateTranslation(assetRelativePath, text));
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.imageFilePattern)) {
             Log.info("[MlogWatcher] updating image files");
             Core.app.post(() -> MapMetadataUpdater.updateImageFile(file));
-        } else if (matchesPattern(relativePath, Constants.Settings.soundFilePattern)) {
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.soundFilePattern)) {
             Log.info("[MlogWatcher] updating sound files");
             Core.app.post(() -> MapMetadataUpdater.updateAudioFile(DataAssetType.sound, file));
-        } else if (matchesPattern(relativePath, Constants.Settings.musicFilePattern)) {
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.musicFilePattern)) {
             Log.info("[MlogWatcher] updating music files");
             Core.app.post(() -> MapMetadataUpdater.updateAudioFile(DataAssetType.music, file));
         } else if (matchesPattern(relativePath, Constants.Settings.bundleFilePattern)) {

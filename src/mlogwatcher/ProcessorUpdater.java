@@ -1,5 +1,6 @@
 package mlogwatcher;
 
+import arc.Core;
 import arc.Events;
 import arc.files.Fi;
 import arc.graphics.Color;
@@ -7,8 +8,11 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.util.Log;
 import arc.util.Nullable;
+import arc.util.Reflect;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.editor.MapInfoDialog;
+import mindustry.editor.MapProcessorsDialog;
 import mindustry.game.EventType;
 import mindustry.graphics.Pal;
 import mindustry.logic.LVar;
@@ -22,6 +26,8 @@ import mlogwatcher.websocket.api.Response;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static mindustry.Vars.state;
 
 public class ProcessorUpdater {
     @Nullable
@@ -50,6 +56,51 @@ public class ProcessorUpdater {
 
     public static boolean accessible(LogicBlock.LogicBuild logicBuild) {
         return ((LogicBlock) logicBuild.block).accessible();
+    }
+
+    public static String insertLogicFromFile(String pathName) {
+        String targetFilePath = Core.settings.getString(Constants.Settings.mlogPath);
+        String fileName = pathName
+                .substring(targetFilePath.length() + 1)
+                .split("\\.")[0]
+                .replaceAll("\\\\", "/");
+        String asmCode = Fi.get(pathName).readString();
+
+        if(Core.settings.getBool(Constants.Settings.mlogWatchByNameOn)) {
+            LogicBlock.LogicBuild logicBuild = null;
+
+            Log.info("[MlogWatcher] updating logic by name " + fileName);
+            outer: for(int x = 0; x < Vars.world.tiles.width; x++) {
+                for(int y = 0; y < Vars.world.tiles.height; y++) {
+                    Tile tile = Vars.world.tiles.get(x, y);
+
+                    if(tile.isCenter() && tile.build instanceof LogicBlock.LogicBuild build && build.tag != null && build.tag.equals(fileName)) {
+                        Log.info("[MlogWatcher] found " + build);
+
+                        logicBuild = build;
+
+                        break outer;
+                    }
+                }
+            }
+
+            if(logicBuild != null) {
+                boolean prev = state.rules.editor;
+
+                state.rules.editor = true;
+                String response = insertLogic(logicBuild, asmCode);
+                state.rules.editor = prev;
+
+                Reflect.invoke((MapProcessorsDialog) Reflect.get((MapInfoDialog) Reflect.get(Vars.ui.editor, "infoDialog"), "processors"), "rebuild");
+
+                return response;
+            } else {
+                Log.warn("[MlogWatcher] cannot find any selected logic block!");
+                return Response.ERR_NO_PROCESSOR_ATTACHED;
+            }
+        } else {
+           return insertLogic(asmCode);
+        }
     }
 
     public static String insertLogic(String asmCode) {

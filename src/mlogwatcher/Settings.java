@@ -26,8 +26,16 @@ public class Settings {
     public static void init() {
         Core.settings.defaults(
                 Constants.Settings.mlogPath, "",
+                Constants.Settings.ignorePathPattern, "{.git/**}",
                 Constants.Settings.mlogExtension, "mlog",
                 Constants.Settings.mschExtension, "msch",
+                Constants.Settings.patchFilePattern, "assets/patch/**/*.{hjson,json,json5}",
+                Constants.Settings.contentFilePattern, "assets/content/**/*.{hjson,json,json5}",
+                Constants.Settings.translationFilePattern,"assets/translation/**/*.properties",
+                Constants.Settings.imageFilePattern,"assets/image/**/*.png",
+                Constants.Settings.soundFilePattern, "assets/sound/**/*.{ogg,mp3}",
+                Constants.Settings.musicFilePattern,  "assets/music/**/*.{ogg,mp3}",
+                Constants.Settings.bundleFilePattern, "assets/bundle/bundle.{hjson,json,json5}",
                 Constants.Settings.websocketPort, 9992,
                 Constants.Settings.processorTagVariables, "*tag *id"
         );
@@ -40,6 +48,10 @@ public class Settings {
                     Constants.Bundles.settingMlogPathLabel,
                     Constants.Bundles.settingNoPathSelected,
                     c -> FileWatcher.restartWatcherThread());
+            wideText(t, Constants.Settings.ignorePathPattern,
+                    Constants.Bundles.settingIgnorePathPatternLabel,
+                    Constants.Bundles.settingNoIgnorePathSelected,
+                    c -> {});
 
             button(t, Constants.Bundles.settingMlogSelectButton, () ->
                     new FileChooserDialog(
@@ -98,16 +110,33 @@ public class Settings {
                 numberOfSchematicsLabel.update(l -> l.setText(numberOfSchematicsText()));
             });
 
+            pattern(t, Constants.Settings.patchFilePattern, Constants.Bundles.settingPatchFilePatternInputLabel);
+            pattern(t, Constants.Settings.contentFilePattern, Constants.Bundles.settingContentFilePatternInputLabel);
+            pattern(t, Constants.Settings.translationFilePattern, Constants.Bundles.settingTranslationFilePatternInputLabel);
+            pattern(t, Constants.Settings.imageFilePattern, Constants.Bundles.settingImageFilePatternInputLabel);
+            pattern(t, Constants.Settings.soundFilePattern, Constants.Bundles.settingSoundFilePatternInputLabel);
+            pattern(t, Constants.Settings.musicFilePattern, Constants.Bundles.settingMusicFilePatternInputLabel);
+            pattern(t, Constants.Settings.bundleFilePattern, Constants.Bundles.settingBundleFilePatternInputLabel);
 
             t.button("@settings.reset", () -> {
                 Core.settings.remove(Constants.Settings.mlogPath);
+                Core.settings.remove(Constants.Settings.ignorePathPattern);
                 Core.settings.remove(Constants.Settings.mlogExtension);
                 Core.settings.remove(Constants.Settings.mschExtension);
                 Core.settings.remove(Constants.Settings.mlogWatchByNameOn);
+                Core.settings.remove(Constants.Settings.recursiveDirectoryWatchOn);
                 Core.settings.remove(Constants.Settings.websocketPort);
                 Core.settings.remove(Constants.Settings.ignoreServerBindError);
                 Core.settings.remove(Constants.Settings.legacyApiOff);
                 Core.settings.remove(Constants.Settings.processorTagVariables);
+
+                Core.settings.remove(Constants.Settings.patchFilePattern);
+                Core.settings.remove(Constants.Settings.contentFilePattern);
+                Core.settings.remove(Constants.Settings.translationFilePattern);
+                Core.settings.remove(Constants.Settings.imageFilePattern);
+                Core.settings.remove(Constants.Settings.soundFilePattern);
+                Core.settings.remove(Constants.Settings.musicFilePattern);
+                Core.settings.remove(Constants.Settings.bundleFilePattern);
 
                 FileWatcher.restartWatcherThread();
                 MlogServer.restartServer();
@@ -167,6 +196,10 @@ public class Settings {
         field.update(() -> field.setText(String.valueOf(Core.settings.getString(key))));
         field.changed(() -> Core.settings.put(key, field.getText()));
         t.add(field).row();
+    }
+
+    private static void pattern(Table t, String key, String name) {
+        wideText(t, key, name, Constants.Bundles.settingNoPattern, text -> {});
     }
 
     private static void check(Table t, String key, String name) {

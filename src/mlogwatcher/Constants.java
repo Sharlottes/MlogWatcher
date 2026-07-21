@@ -15,14 +15,24 @@ public class Constants {
 
     public static class Bundles {
         public static final String settingMlogPathLabel = "@mlogwatcher.setting.mlogLabel";
+        public static final String settingIgnorePathPatternLabel = "@mlogwatcher.setting.ignorePathPatternLabel";
         public static final String settingNoPathSelected = "@mlogwatcher.setting.noPath";
+        public static final String settingNoIgnorePathSelected = "@mlogwatcher.setting.noIgnorePath";
         public static final String settingMlogSelectButton = "@mlogwatcher.setting.mlogSelectButton";
         public static final String settingFileChooserTitle = "@mlogwatcher.setting.fileChooserTitle";
         public static final String settingMlogExtensionInputLabel = "@mlogwatcher.setting.mlogExtensionInputLabel";
         public static final String settingMschExtensionInputLabel = "@mlogwatcher.setting.mschExtensionInputLabel";
+        public static final String settingPatchFilePatternInputLabel = "@mlogwatcher.setting.patchFilePatternInputLabel";
+        public static final String settingContentFilePatternInputLabel = "@mlogwatcher.setting.contentFilePatternInputLabel";
+        public static final String settingTranslationFilePatternInputLabel = "@mlogwatcher.setting.translationFilePatternInputLabel";
+        public static final String settingImageFilePatternInputLabel = "@mlogwatcher.setting.imageFilePatternInputLabel";
+        public static final String settingSoundFilePatternInputLabel = "@mlogwatcher.setting.soundFilePatternInputLabel";
+        public static final String settingMusicFilePatternInputLabel = "@mlogwatcher.setting.musicFilePatternInputLabel";
+        public static final String settingBundleFilePatternInputLabel = "@mlogwatcher.setting.bundleFilePatternInputLabel";
         public static final String settingMlogWatchByNameOn = "@mlogwatcher.setting.mlogWatchByNameOn";
         public static final String settingRecursiveDirectoryWatchOn = "@mlogwatcher.setting.recursiveDirectoryWatchOn";
         public static final String settingNoExt = "@mlogwatcher.setting.noExtension";
+        public static final String settingNoPattern = "@mlogwatcher.setting.noPattern";
         public static final String settingRestartFileWatcherButton = "@mlogwatcher.setting.restartFileWatcherButton";
 
         public static final String settingWebsocketPortLabel = "@mlogwatcher.setting.websocketPortLabel";
@@ -42,8 +52,16 @@ public class Constants {
 
     public static class Settings {
         public static final String mlogPath = "mlogwatcher-mlog-path";
+        public static final String ignorePathPattern = "mlogwatcher-ignore-path-pattern";
         public static final String mlogExtension = "mlogwatcher-mlog-extension";
         public static final String mschExtension = "mlogwatcher-msch-extension";
+        public static final String patchFilePattern = "mlogwatcher-patch-file-pattern";
+        public static final String contentFilePattern = "mlogwatcher-content-file-pattern";
+        public static final String translationFilePattern = "mlogwatcher-translation-file-pattern";
+        public static final String imageFilePattern = "mlogwatcher-iamge-file-pattern";
+        public static final String soundFilePattern = "mlogwatcher-sound-file-pattern";
+        public static final String musicFilePattern = "mlogwatcher-music-file-pattern";
+        public static final String bundleFilePattern = "mlogwatcher-bundle-file-pattern";
         public static final String mlogWatchByNameOn = "mlogwatcher-mlog-watch-by-name-on";
         public static final String recursiveDirectoryWatchOn = "mlogwatcher-recursive-directory-watch-on";
         public static final String websocketPort = "mlogwatcher-websocket-port";

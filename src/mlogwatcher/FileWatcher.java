@@ -5,11 +5,13 @@ import arc.files.Fi;
 import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Reflect;
+import arc.util.Structs;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.editor.MapInfoDialog;
 import mindustry.editor.MapProcessorsDialog;
 import mindustry.gen.Groups;
+import mindustry.mod.data.DataAssetType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.LogicBlock;
 
@@ -60,9 +62,10 @@ class FileWatcherThread extends Thread {
     public void run() {
         super.run();
 
-        Path targetFilePath = FileSystems.getDefault().getPath(this.targetFilePath);
+        FileSystem fileSystem = FileSystems.getDefault();
+        Path targetFilePath = fileSystem.getPath(this.targetFilePath);
 
-        try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
+        try (final WatchService watchService = fileSystem.newWatchService()) {
             Files.walkFileTree(targetFilePath, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
@@ -85,8 +88,10 @@ class FileWatcherThread extends Thread {
             while (true) {
                 final WatchKey watchKey = watchService.take();
 
-                for (WatchEvent<?> event : watchKey.pollEvents()) {
-                    Path path = ((Path) watchKey.watchable()).resolve((Path)event.context());
+                outer: for (WatchEvent<?> event : watchKey.pollEvents()) {
+                    Path absolutePath = ((Path) watchKey.watchable()).resolve((Path)event.context());
+                    Path relativePath = targetFilePath.relativize(absolutePath);
+                    String[] ignorePatternArray = Core.settings.getString(Constants.Settings.ignorePathPattern, "").split(" ");
 
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                         Log.warn("[MlogWatcher] new file detected, restarting watcher thread");
@@ -95,50 +100,47 @@ class FileWatcherThread extends Thread {
                         return;
                     }
 
-                    String pathName = path.toString();
-                    String fileName = pathName
-                            .substring(targetFilePath.toString().length() + 1)
-                            .split("\\.")[0]
-                            .replaceAll("\\\\", "/");
+                    for (String ignorePattern : ignorePatternArray) {
+                        if (ignorePattern.isEmpty()) continue;
 
-                    Log.info("[MlogWatcher] found modified file " + pathName);
+                        if (fileSystem.getPathMatcher("glob:" + ignorePattern).matches(relativePath)) {
+                            continue outer;
+                        }
+                    }
 
-                    if (matchesExtension(pathName, Constants.Settings.mlogExtension)) {
+                    String pathString = absolutePath.toString();
+                    Fi file = Fi.get(pathString);
+                    String text = file.readString();
+
+                    Log.info("[MlogWatcher] found modified file " + pathString);
+
+                    if (matchesExtension(pathString, Constants.Settings.mlogExtension)) {
                         Log.info("[MlogWatcher] updating logic");
-                        Core.app.post(() -> {
-                            String asmCode = Fi.get(pathName).readString();
-
-
-
-                            if(Core.settings.getBool(Constants.Settings.mlogWatchByNameOn)) {
-                                Log.info("[MlogWatcher] updating logic by name " + fileName);
-
-                                outer: for(int x = 0; x < Vars.world.tiles.width; x++){
-                                    for(int y = 0; y < Vars.world.tiles.height; y++){
-                                        Tile tile = Vars.world.tiles.get(x, y);
-
-                                        if(tile.isCenter() && tile.build instanceof LogicBlock.LogicBuild logicBuild && logicBuild.tag != null && logicBuild.tag.equals(fileName)) {
-                                            Log.info("[MlogWatcher] found " + logicBuild);
-
-                                            boolean prev = state.rules.editor;
-
-                                            state.rules.editor = true;
-                                            ProcessorUpdater.insertLogic(logicBuild, asmCode);
-                                            state.rules.editor = prev;
-
-                                            Reflect.invoke((MapProcessorsDialog) Reflect.get((MapInfoDialog) Reflect.get(Vars.ui.editor, "infoDialog"), "processors"), "rebuild");
-
-                                            break outer;
-                                        }
-                                    }
-                                }
-                            } else {
-                                ProcessorUpdater.insertLogic(asmCode);
-                            }
-                        });
-                    } else if (matchesExtension(pathName, Constants.Settings.mschExtension)) {
+                        Core.app.post(() -> ProcessorUpdater.insertLogicFromFile(pathString));
+                    } else if (matchesExtension(pathString, Constants.Settings.mschExtension)) {
                         Log.info("[MlogWatcher] updating schematics");
-                        Core.app.post(() -> SchematicsUpdater.importSchematicsFromFile(pathName));
+                        Core.app.post(() -> SchematicsUpdater.importSchematicsFromFile(pathString));
+                    } else if (matchesPattern(relativePath, Constants.Settings.patchFilePattern)) {
+                        Log.info("[MlogWatcher] updating patch files");
+                        Core.app.post(() -> MapMetadataUpdater.updatePatch(relativePath, text));
+                    } else if (matchesPattern(relativePath, Constants.Settings.contentFilePattern)) {
+                        Log.info("[MlogWatcher] updating content files");
+                        Core.app.post(() -> MapMetadataUpdater.updateContent(relativePath, text));
+                    } else if (matchesPattern(relativePath, Constants.Settings.translationFilePattern)) {
+                        Log.info("[MlogWatcher] updating translation files");
+                        Core.app.post(() -> MapMetadataUpdater.updateTranslation(relativePath, text));
+                    } else if (matchesPattern(relativePath, Constants.Settings.imageFilePattern)) {
+                        Log.info("[MlogWatcher] updating image files");
+                        Core.app.post(() -> MapMetadataUpdater.updateImageFile(file));
+                    } else if (matchesPattern(relativePath, Constants.Settings.soundFilePattern)) {
+                        Log.info("[MlogWatcher] updating sound files");
+                        Core.app.post(() -> MapMetadataUpdater.updateAudioFile(DataAssetType.sound, file));
+                    } else if (matchesPattern(relativePath, Constants.Settings.musicFilePattern)) {
+                        Log.info("[MlogWatcher] updating music files");
+                        Core.app.post(() -> MapMetadataUpdater.updateAudioFile(DataAssetType.music, file));
+                    } else if (matchesPattern(relativePath, Constants.Settings.bundleFilePattern)) {
+                        Log.info("[MlogWatcher] updating bundle files");
+                        Core.app.post(() -> MapMetadataUpdater.updateBundle(text));
                     }
                 }
 
@@ -150,7 +152,7 @@ class FileWatcherThread extends Thread {
         } catch (InterruptedException e) {
             Log.warn("[MlogWatcher] directory has been changed");
         } catch (Exception e) {
-            Log.warn("[MlogWatcher] file watcher restarted");
+            Log.warn("[MlogWatcher] file watcher restarted due to exception: " + e.toString());
             FileWatcher.restartWatcherThread();
         } finally {
             Settings.updateWatcherStatus(false);
@@ -161,5 +163,17 @@ class FileWatcherThread extends Thread {
         String extension = Core.settings.getString(extensionKey);
         if (extension.isEmpty()) return false;
         return path.endsWith("." + extension);
+    }
+
+    private boolean matchesPattern(Path path, String patternKey) {
+        String pattern = Core.settings.getString(patternKey);
+
+        if (pattern.isEmpty()) return false;
+
+        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+
+//        Log.info("[MlogWatcher] checking file " + path.toString() + " with pattern: " + pattern + " ---> " + (pathMatcher.matches(path) ? " matches" : " does not match"));
+
+        return pathMatcher.matches(path);
     }
 }

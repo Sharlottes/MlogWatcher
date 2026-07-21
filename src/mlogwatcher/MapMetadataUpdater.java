@@ -65,7 +65,7 @@ public class MapMetadataUpdater {
         try {
             Jval.read(text); //validation
 
-            int replaceIndex = patches.indexOf(p -> p.path.equalsIgnoreCase(asset.path));
+            int replaceIndex = patches.indexOf(p ->  p.patch.split("\n")[0].replace(" ", "").equalsIgnoreCase(text.split("\n")[0].replace(" ", "")));
 
             if(replaceIndex == -1) {
                 patches.add(asset);
@@ -90,8 +90,16 @@ public class MapMetadataUpdater {
     public static void updateContent(Path path, String text) {
         String typeDirectory = path.subpath(0, 1).toString();
         ContentType contentType = Structs.find(ContentType.all, type -> type.folderName.equalsIgnoreCase(typeDirectory));
+        Seq<ContentAsset> contents = state.data.getContent();
+        ContentAsset asset = new ContentAsset(path.toString(), contentType, text);
+        int replaceIndex = contents.indexOf(p ->  p.path.equalsIgnoreCase(asset.path) || p.name.equalsIgnoreCase(asset.name));
 
-        state.data.getContent().add(new ContentAsset(path.toString(), contentType, text));
+        if(replaceIndex == -1) {
+            contents.add(asset);
+        } else {
+            contents.set(replaceIndex, asset);
+        }
+
         state.data.reloadContent(false);
         state.data.regenerateContentSprites(false);
 

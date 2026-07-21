@@ -9,6 +9,7 @@ import arc.graphics.g2d.Lines;
 import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Reflect;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.editor.MapInfoDialog;
@@ -23,6 +24,8 @@ import mlogwatcher.websocket.api.ProcessorUpdateResults;
 import mlogwatcher.websocket.api.ProgramId;
 import mlogwatcher.websocket.api.Response;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -58,13 +61,12 @@ public class ProcessorUpdater {
         return ((LogicBlock) logicBuild.block).accessible();
     }
 
-    public static String insertLogicFromFile(String pathName) {
-        String targetFilePath = Core.settings.getString(Constants.Settings.mlogPath);
-        String fileName = pathName
-                .substring(targetFilePath.length() + 1)
-                .split("\\.")[0]
-                .replaceAll("\\\\", "/");
-        String asmCode = Fi.get(pathName).readString();
+    public static String insertLogicFromFile(Path relativePath, String asmCode) {
+        String fileName =
+                Strings
+                    .getFileNameWithoutExtension(relativePath.toString())
+                    .replace('\\', '/');
+
 
         if(Core.settings.getBool(Constants.Settings.mlogWatchByNameOn)) {
             LogicBlock.LogicBuild logicBuild = null;

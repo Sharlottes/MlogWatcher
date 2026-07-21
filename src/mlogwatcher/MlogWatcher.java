@@ -5,6 +5,7 @@ import mindustry.game.EventType;
 import mindustry.mod.Mod;
 import mlogwatcher.ui.ProcessorIdLabel;
 import mlogwatcher.ui.SchematicsDialogSubclass;
+import mlogwatcher.ui.fragments.ElementInjector;
 import mlogwatcher.websocket.MlogServer;
 
 public class MlogWatcher extends Mod {
@@ -16,6 +17,7 @@ public class MlogWatcher extends Mod {
             ProcessorIdLabel.updateVariables();
             ProcessorUpdater.init();
             SchematicsDialogSubclass.init();
+            ElementInjector.init();
             FileWatcher.startWatcherThread();
             MlogServer.startServer();
         });

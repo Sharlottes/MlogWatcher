@@ -26,7 +26,8 @@ public class Settings {
     public static void init() {
         Core.settings.defaults(
                 Constants.Settings.mlogPath, "",
-                Constants.Settings.ignorePathPattern, "{.git/**}",
+                Constants.Settings.mlogRootDirectory, "",
+                Constants.Settings.ignorePathPattern, ".git**",
                 Constants.Settings.mlogExtension, "mlog",
                 Constants.Settings.mschExtension, "msch",
                 Constants.Settings.patchFilePattern, "assets/patch/**/*.{hjson,json,json5}",
@@ -48,10 +49,6 @@ public class Settings {
                     Constants.Bundles.settingMlogPathLabel,
                     Constants.Bundles.settingNoPathSelected,
                     c -> FileWatcher.restartWatcherThread());
-            wideText(t, Constants.Settings.ignorePathPattern,
-                    Constants.Bundles.settingIgnorePathPatternLabel,
-                    Constants.Bundles.settingNoIgnorePathSelected,
-                    c -> {});
 
             button(t, Constants.Bundles.settingMlogSelectButton, () ->
                     new FileChooserDialog(
@@ -65,6 +62,11 @@ public class Settings {
                                 watchedDirectory.setText(path);
                             }).show());
 
+            wideText(t, Constants.Settings.ignorePathPattern,
+                    Constants.Bundles.settingIgnorePathPatternLabel,
+                    Constants.Bundles.settingNoIgnorePathSelected,
+                    c -> {});
+            extension(t, Constants.Settings.mlogRootDirectory, Constants.Bundles.settingMlogRootDirectoryInputLabel);
             extension(t, Constants.Settings.mlogExtension, Constants.Bundles.settingMlogExtensionInputLabel);
             extension(t, Constants.Settings.mschExtension, Constants.Bundles.settingMschExtensionInputLabel);
             check(t, Constants.Settings.mlogWatchByNameOn, Constants.Bundles.settingMlogWatchByNameOn);
@@ -121,6 +123,7 @@ public class Settings {
             t.button("@settings.reset", () -> {
                 Core.settings.remove(Constants.Settings.mlogPath);
                 Core.settings.remove(Constants.Settings.ignorePathPattern);
+                Core.settings.remove(Constants.Settings.mlogRootDirectory);
                 Core.settings.remove(Constants.Settings.mlogExtension);
                 Core.settings.remove(Constants.Settings.mschExtension);
                 Core.settings.remove(Constants.Settings.mlogWatchByNameOn);

@@ -20,6 +20,7 @@ public class Constants {
         public static final String settingNoIgnorePathSelected = "@mlogwatcher.setting.noIgnorePath";
         public static final String settingMlogSelectButton = "@mlogwatcher.setting.mlogSelectButton";
         public static final String settingFileChooserTitle = "@mlogwatcher.setting.fileChooserTitle";
+        public static final String settingMlogRootDirectoryInputLabel = "@mlogwatcher.setting.mlogRootDirectoryInputLabel";
         public static final String settingMlogExtensionInputLabel = "@mlogwatcher.setting.mlogExtensionInputLabel";
         public static final String settingMschExtensionInputLabel = "@mlogwatcher.setting.mschExtensionInputLabel";
         public static final String settingPatchFilePatternInputLabel = "@mlogwatcher.setting.patchFilePatternInputLabel";
@@ -48,11 +49,15 @@ public class Constants {
 
         public static final String infoServerBindErrorTitle = "@mlogwatcher.info.serverBindErrorTitle";
         public static final String infoServerBindError = "@mlogwatcher.info.serverBindError";
+
+        public static final String forceUpdateAll = "@mlogwatcher.editor.forceUpdateAll";
+        public static final String forceUpdateAllDone = "@mlogwatcher.editor.forceUpdateAllDone";
     }
 
     public static class Settings {
         public static final String mlogPath = "mlogwatcher-mlog-path";
         public static final String ignorePathPattern = "mlogwatcher-ignore-path-pattern";
+        public static final String mlogRootDirectory = "mlogwatcher-mlog-root-directory";
         public static final String mlogExtension = "mlogwatcher-mlog-extension";
         public static final String mschExtension = "mlogwatcher-msch-extension";
         public static final String patchFilePattern = "mlogwatcher-patch-file-pattern";

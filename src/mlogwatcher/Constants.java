@@ -12,7 +12,6 @@ public class Constants {
         public static final String numberOfSchematics = "mlogwatcher.setting.numberOfSchematics";
     }
 
-
     public static class Bundles {
         public static final String settingMlogPathLabel = "@mlogwatcher.setting.mlogLabel";
         public static final String settingIgnorePathPatternLabel = "@mlogwatcher.setting.ignorePathPatternLabel";
@@ -31,6 +30,7 @@ public class Constants {
         public static final String settingSoundFilePatternInputLabel = "@mlogwatcher.setting.soundFilePatternInputLabel";
         public static final String settingMusicFilePatternInputLabel = "@mlogwatcher.setting.musicFilePatternInputLabel";
         public static final String settingBundleFilePatternInputLabel = "@mlogwatcher.setting.bundleFilePatternInputLabel";
+        public static final String settingObjectiveFilePatternInputLabel = "@mlogwatcher.setting.objectiveFilePatternInputLabel";
         public static final String settingMlogWatchByNameOn = "@mlogwatcher.setting.mlogWatchByNameOn";
         public static final String settingRecursiveDirectoryWatchOn = "@mlogwatcher.setting.recursiveDirectoryWatchOn";
         public static final String settingNoExt = "@mlogwatcher.setting.noExtension";
@@ -69,6 +69,7 @@ public class Constants {
         public static final String soundFilePattern = "mlogwatcher-sound-file-pattern";
         public static final String musicFilePattern = "mlogwatcher-music-file-pattern";
         public static final String bundleFilePattern = "mlogwatcher-bundle-file-pattern";
+        public static final String objectiveFilePattern = "mlogwatcher-objective-file-pattern";
         public static final String mlogWatchByNameOn = "mlogwatcher-mlog-watch-by-name-on";
         public static final String recursiveDirectoryWatchOn = "mlogwatcher-recursive-directory-watch-on";
         public static final String websocketPort = "mlogwatcher-websocket-port";

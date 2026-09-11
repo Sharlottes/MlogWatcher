@@ -30,13 +30,15 @@ public class Settings {
                 Constants.Settings.ignorePathPattern, ".git**",
                 Constants.Settings.mlogExtension, "mlog",
                 Constants.Settings.mschExtension, "msch",
-                Constants.Settings.patchFilePattern, "assets/patch/**/*.{hjson,json,json5}",
-                Constants.Settings.contentFilePattern, "assets/content/**/*.{hjson,json,json5}",
-                Constants.Settings.translationFilePattern,"assets/translation/**/*.properties",
-                Constants.Settings.imageFilePattern,"assets/image/**/*.png",
-                Constants.Settings.soundFilePattern, "assets/sound/**/*.{ogg,mp3}",
-                Constants.Settings.musicFilePattern,  "assets/music/**/*.{ogg,mp3}",
-                Constants.Settings.bundleFilePattern, "assets/bundle/bundle.{hjson,json,json5}",
+                Constants.Settings.assetRootDirectory, "assets",
+                Constants.Settings.patchFilePattern, "patch/**/*.{hjson,json,json5}",
+                Constants.Settings.contentFilePattern, "content/**/*.{hjson,json,json5}",
+                Constants.Settings.translationFilePattern,"translation/**/*.properties",
+                Constants.Settings.imageFilePattern,"image/**/*.png",
+                Constants.Settings.soundFilePattern, "sound/**/*.{ogg,mp3}",
+                Constants.Settings.musicFilePattern,  "music/**/*.{ogg,mp3}",
+                Constants.Settings.bundleFilePattern, "bundle.{hjson,json,json5}",
+                Constants.Settings.objectiveFilePattern, "objective.{hjson,json,json5}",
                 Constants.Settings.websocketPort, 9992,
                 Constants.Settings.processorTagVariables, "*tag *id"
         );
@@ -120,6 +122,7 @@ public class Settings {
             pattern(t, Constants.Settings.soundFilePattern, Constants.Bundles.settingSoundFilePatternInputLabel);
             pattern(t, Constants.Settings.musicFilePattern, Constants.Bundles.settingMusicFilePatternInputLabel);
             pattern(t, Constants.Settings.bundleFilePattern, Constants.Bundles.settingBundleFilePatternInputLabel);
+            pattern(t, Constants.Settings.objectiveFilePattern, Constants.Bundles.settingObjectiveFilePatternInputLabel);
 
             t.button("@settings.reset", () -> {
                 Core.settings.remove(Constants.Settings.mlogPath);
@@ -142,6 +145,7 @@ public class Settings {
                 Core.settings.remove(Constants.Settings.soundFilePattern);
                 Core.settings.remove(Constants.Settings.musicFilePattern);
                 Core.settings.remove(Constants.Settings.bundleFilePattern);
+                Core.settings.remove(Constants.Settings.objectiveFilePattern);
 
                 FileWatcher.restartWatcherThread();
                 MlogServer.restartServer();

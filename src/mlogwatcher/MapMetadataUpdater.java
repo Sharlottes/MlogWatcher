@@ -22,9 +22,11 @@ import mindustry.content.Fx;
 import mindustry.ctype.ContentType;
 import mindustry.editor.MapInfoDialog;
 import mindustry.editor.MapLocalesDialog;
+import mindustry.editor.MapObjectivesDialog;
 import mindustry.editor.MapProcessorsDialog;
 import mindustry.editor.data.MapAssetsDialog;
 import mindustry.game.EventType;
+import mindustry.game.MapObjectives;
 import mindustry.graphics.Pal;
 import mindustry.io.JsonIO;
 import mindustry.logic.LVar;
@@ -223,5 +225,23 @@ public class MapMetadataUpdater {
         state.mapLocales = locales;
 
         Log.info("[MlogWatcher] successfully updated locales");
+    }
+
+    /**
+     * @param text formatted map locale bundle text
+     * @see mindustry.editor.MapObjectivesDialog
+     */
+    public static void updateObjective(String text) {
+        try{
+            MapObjectives objectives = JsonIO.read(MapObjectives.class, text);
+
+            if(objectives != null) {
+                state.rules.objectives = objectives;
+            }
+        }catch(Exception e) {
+            Log.err(e);
+        }
+
+        Log.info("[MlogWatcher] successfully updated objectives");
     }
 }

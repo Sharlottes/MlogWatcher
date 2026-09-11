@@ -174,9 +174,12 @@ public class FileWatcher {
         } else if (matchesPattern(assetRelativePath, Constants.Settings.musicFilePattern)) {
             Log.info("[MlogWatcher] updating music files");
             Core.app.post(() -> MapMetadataUpdater.updateAudioFile(DataAssetType.music, file));
-        } else if (matchesPattern(relativePath, Constants.Settings.bundleFilePattern)) {
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.bundleFilePattern)) {
             Log.info("[MlogWatcher] updating bundle files");
             Core.app.post(() -> MapMetadataUpdater.updateBundle(text));
+        } else if (matchesPattern(assetRelativePath, Constants.Settings.objectiveFilePattern)) {
+            Log.info("[MlogWatcher] updating objective files");
+            Core.app.post(() -> MapMetadataUpdater.updateObjective(text));
         }
     }
 

@@ -9,6 +9,16 @@ Additionally, when your mouse is positioned over a processor, the mod may displa
 
 Processor IDs can be created by any mlog program. [Mindcode](https://github.com/cardillan/mindcode) provides support for generating processor IDs in the expected format.
 
+## Android support
+
+The mod is now available for Android. To receive data with the mod, follow these steps:
+- Prepare your game to receive the data (e.g., tap on a processor to select it)
+- Switch to the web browser to your favorite compiler and compile your code or build your schematic
+- Send the code or schematic to the mod using a button on the page
+- Switch back to Mindustry.
+
+At this point, Mlog Watcher should receive the data as usual.  
+
 ## File Watcher
 
 The File Watcher monitors a specific directory for changes to files containing mlog code or schematic definitions.

@@ -1,35 +1,33 @@
 package mlogwatcher;
 
 import arc.Events;
-import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.util.Log;
 import arc.util.Nullable;
-import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.game.EventType;
+import mindustry.gen.Groups;
 import mindustry.graphics.Pal;
 import mindustry.logic.LVar;
-import mindustry.world.Tile;
 import mindustry.world.blocks.logic.LogicBlock;
+import mindustry.world.blocks.logic.LogicBlock.LogicBuild;
 import mlogwatcher.websocket.api.LogicProcessor;
 import mlogwatcher.websocket.api.ProcessorUpdateResults;
 import mlogwatcher.websocket.api.ProgramId;
 import mlogwatcher.websocket.api.Response;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ProcessorUpdater {
     @Nullable
-    private static LogicBlock.LogicBuild lastTappedLogicBuild = null;
+    private static LogicBuild lastTappedLogicBuild = null;
 
     public static void init() {
         Events.on(EventType.TapEvent.class, e -> {
-            if (e.tile.build instanceof LogicBlock.LogicBuild logicBuild && accessible(logicBuild)) {
+            if (e.tile.build instanceof LogicBuild logicBuild && accessible(logicBuild)) {
                 lastTappedLogicBuild = logicBuild;
             } else {
                 lastTappedLogicBuild = null;
@@ -48,7 +46,7 @@ public class ProcessorUpdater {
         Events.on(EventType.ResetEvent.class, e -> lastTappedLogicBuild = null);
     }
 
-    public static boolean accessible(LogicBlock.LogicBuild logicBuild) {
+    public static boolean accessible(LogicBuild logicBuild) {
         return ((LogicBlock) logicBuild.block).accessible();
     }
 
@@ -61,7 +59,7 @@ public class ProcessorUpdater {
         return insertLogic(lastTappedLogicBuild, asmCode);
     }
 
-    public static String insertLogic(@Nullable LogicBlock.LogicBuild build, String asmCode) {
+    public static String insertLogic(@Nullable LogicBuild build, String asmCode) {
         if (build == null || build.dead) {
             Log.warn("[MlogWatcher] cannot find any selected logic block!");
             return Response.ERR_NO_PROCESSOR_ATTACHED;
@@ -87,7 +85,7 @@ public class ProcessorUpdater {
         return extractLogic(lastTappedLogicBuild);
     }
 
-    private static String extractLogic(LogicBlock.LogicBuild build) {
+    private static String extractLogic(LogicBuild build) {
         if (build == null || build.dead || !accessible(build)) {
             Log.warn("[MlogWatcher] cannot find any selected logic block!");
             return null;
@@ -102,33 +100,35 @@ public class ProcessorUpdater {
     public static ProcessorUpdateResults updateAllProcessorsOnMap(String asmCode, ProgramId newId, String variableName,
             VersionSelection versionSelection) {
         List<LogicProcessor> updates = new ArrayList<>();
-        Vars.world.tiles.eachTile(tile -> updateTile(tile, asmCode, newId, variableName, versionSelection, updates));
+        Groups.build.forEach(b -> {
+            if (b instanceof LogicBuild logicBuild && accessible(logicBuild)) {
+                updateBuild(logicBuild, asmCode, newId, variableName, versionSelection, updates);
+            }
+        });
         return new ProcessorUpdateResults(updates);
     }
 
-    private static void updateTile(Tile tile, String asmCode, ProgramId newId, String variableName,
-            VersionSelection versionSelection, List<LogicProcessor> updates) {
-        if (tile.build instanceof LogicBlock.LogicBuild logicBuild && accessible(logicBuild)) {
-            LVar lVar = logicBuild.executor.optionalVar(variableName);
-            if (lVar != null && lVar.obj() instanceof String id) {
-                ProgramId oldId = ProgramId.parse(id);
+    private static void updateBuild(LogicBuild logicBuild, String asmCode, ProgramId newId, String variableName,
+                                    VersionSelection versionSelection, List<LogicProcessor> updates) {
+        LVar lVar = logicBuild.executor.optionalVar(variableName);
+        if (lVar != null && lVar.obj() instanceof String id) {
+            ProgramId oldId = ProgramId.parse(id);
 
-                final String updateStatus;
-                if (oldId == null) {
-                    updateStatus = LogicProcessor.MISSING_PROGRAM_ID;
-                } else if (oldId.getIdPrefix().equals(newId.getIdPrefix())) {
-                    if (shouldUpdate(oldId, newId, versionSelection)) {
-                        String result = insertLogic(logicBuild, asmCode);
-                        updateStatus = Response.isSuccess(result) ? LogicProcessor.UPDATED : result;
-                    } else {
-                        updateStatus = LogicProcessor.INCOMPATIBLE_VERSION;
-                    }
+            final String updateStatus;
+            if (oldId == null) {
+                updateStatus = LogicProcessor.MISSING_PROGRAM_ID;
+            } else if (oldId.getIdPrefix().equals(newId.getIdPrefix())) {
+                if (shouldUpdate(oldId, newId, versionSelection)) {
+                    String result = insertLogic(logicBuild, asmCode);
+                    updateStatus = Response.isSuccess(result) ? LogicProcessor.UPDATED : result;
                 } else {
-                    return;
+                    updateStatus = LogicProcessor.INCOMPATIBLE_VERSION;
                 }
-
-                updates.add(new LogicProcessor(logicBuild.tile.x, logicBuild.tile.y, logicBuild.block.name, oldId, updateStatus));
+            } else {
+                return;
             }
+
+            updates.add(new LogicProcessor(logicBuild.tile.x, logicBuild.tile.y, logicBuild.block.name, oldId, updateStatus));
         }
     }
 
